@@ -1,0 +1,106 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="keywords" content="Virink,codeconvtools,encode,decode,virzz.com">
+    <meta name="description" content="A tool for convert code">
+    <meta name="author" content="Virink">
+
+    <title>Code Convert Tools</title>
+
+    <link href="public/main.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body>
+    <div class="wrapper">
+        <table class="main" border="1">
+            <tr>
+                <th rowspan="3" width="25%">
+                    <ul class="mlist">
+                    </ul>
+                </th>
+                <th colspan="2" height="10px"><div class="lib"><h1>Test</h1></div></th>
+            </tr>
+            <tr>
+                <td><textarea name="en" id="en" cols="30" rows="10" class="code"></textarea></td>
+                <td><textarea name="de" id="de" cols="30" rows="10" class="code"></textarea></td>
+            </tr>
+            <tr height="10%">
+                <td><input type="button" id="encode" value="Encode" disabled></td>
+                <td><input type="button" id="decode" value="Decode" disabled></td>
+            </tr>
+            <tr>
+                <td colspan="3" height="30%">
+                    <div style="overflow: scroll;">
+                        <ul class="log">
+                        </ul>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <script>
+    if (typeof module === 'object') {
+        window.module = module;
+        module = undefined;
+    }
+    </script>
+    <script type="text/javascript" src="public/jquery.min.js"></script>
+    <script type="text/javascript" src="public/main.js"></script>
+    <script>
+    if (window.module)
+        module = window.module;
+    </script>
+    <script type="text/javascript">
+
+    $(document).ready(function(){
+
+        libs = load_libs();
+        lib = '';
+        logid = 1;
+        
+        var l = ifunc(libs);
+        $('ul.mlist').html('');
+        l.forEach(function(i){
+            log(i);
+            $('ul.mlist').append('<li><button>'+i+'</button></li>');
+        });
+
+        try{  
+            $('ul.mlist').on("click", "button", function () {
+                $('#encode').attr("disabled",true); 
+                $('#decode').attr("disabled",true); 
+                lib = this.textContent;
+                var m = ifunc(libs[lib]);
+                m.forEach(function(v){
+                    log(v);
+                    $('#'+v).attr("disabled",false);
+                    $('.lib').html('<h1>'+lib+'</h1>')
+                });
+            });
+        }catch (error) {  
+            log(error);  
+        }
+
+        $('#encode').on("click", function () {
+            var str = $('#en').val();
+            var res = libs[lib].encode(str);
+            $('#de').val(res);
+            loged(str, res, 'E');
+        });
+
+        $('#decode').on("click", function () {
+            var str = $('#de').val();
+            var res = libs[lib].decode(str);
+            $('#en').val(res);
+            loged(str, res, 'D');
+        });
+    });
+    </script>
+</body>
+
+</html>
